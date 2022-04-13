@@ -9,9 +9,16 @@ class MineSweeper
 
     def valid_pos?(pos)
         # pass position validity in string state first before converting them to integers
+        pos = pos.split(",")
+        return false if pos.length != 2
+
         idx_1, idx_2 = pos
         valid_idx = ('0'..'8').to_a
         valid_idx.include?(idx_1) && valid_idx.include?(idx_2)
+    end
+
+    def parse_pos(pos)
+        pos.split(",").map { |ch| Integer(ch) }
     end
 
     def valid_command?(ch)

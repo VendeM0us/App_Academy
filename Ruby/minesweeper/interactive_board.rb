@@ -60,4 +60,8 @@ class InteractiveBoard
         valid_idx = ('0'..'8').to_a
         valid_idx.include?(idx_1) && valid_idx.include?(idx_2)
     end
+
+    def get_neighbors(pos)
+        board.get_neighbors(pos)
+    end
 end

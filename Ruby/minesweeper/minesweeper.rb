@@ -14,12 +14,33 @@ class MineSweeper
         valid_idx.include?(idx_1) && valid_idx.include?(idx_2)
     end
 
+    def valid_command?(ch)
+        commands = ['r', 'f']
+        commands.include?(ch)
+    end
+
+    def valid_input?(array)
+        array.length == 2
+    end
+
     def take_turn
-        board.render
+        valid_input = false
 
-        command = nil
-        pos = nil
+        while !valid_input
+            board.render
+            puts "Enter a command and a pos (r for reveal and f for flag)."
+            puts "Example: r 3,4"
+            print "> "
 
-        until board.valid_pos?(pos) && 
+            input = gets.chomp.split(" ")
+            command, pos = input
+
+            if self.valid_pos?(pos) && self.valid_command? && valid_input?(input)
+                valid_input = true
+            else
+                system("clear")
+                puts "Invalid Input"
+            end
+        end
     end
 end

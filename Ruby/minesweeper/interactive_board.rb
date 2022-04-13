@@ -44,7 +44,6 @@ class InteractiveBoard
     end
 
     def fringe(pos)
-        #debugger
         fringe_count = board.count_fringes(pos)
         unless fringe_count == 0
             self[pos] = fringe_count.to_s 

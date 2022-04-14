@@ -1,5 +1,4 @@
 require_relative "interactive_board"
-require "byebug"
 
 class MineSweeper
     attr_reader :board
@@ -107,6 +106,8 @@ class MineSweeper
         self.take_turn until board.win? || board.lose?
 
         if board.win?
+            system("clear")
+            board.render
             puts "YOU WIN!! CONGRATULATIONS!"
         else
             puts "YOU LOSE"

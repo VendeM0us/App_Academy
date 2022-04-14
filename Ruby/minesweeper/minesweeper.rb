@@ -9,16 +9,11 @@ class MineSweeper
         @checked_neighbors = Array.new
     end
 
-    def flag(pos)
-        board.flag(pos)
-    end
-
     def flagged?(pos)
         board[pos] == :F
     end
 
     def chain(pos)
-        # debugger
         @checked_neighbors << pos
         return [pos] if board.has_fringe?(pos)
 
@@ -68,7 +63,16 @@ class MineSweeper
         self.prompt
     end
 
+    def reveal(pos)
+        chains = self.chain(pos)
+
+        chains.each do |square|
+            board.fringe(square) unless self.flagged?(square)
+        end
+    end
+
     def take_turn
+        system("clear")
         @checked_neighbors = []
         board.render
         self.prompt
@@ -82,6 +86,13 @@ class MineSweeper
                 command, pos = input
                 if self.valid_pos?(pos) && self.valid_command?(command)
                     valid_input = true
+                    case input
+
+                    when "r"
+                        self.reveal(pos)
+                    when "f"
+                        board.flag(pos)
+                    end
                 else
                     self.show_error
                 end

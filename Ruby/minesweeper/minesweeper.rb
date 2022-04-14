@@ -9,6 +9,14 @@ class MineSweeper
         @checked_neighbors = Array.new
     end
 
+    def flag(pos)
+        board.flag(pos)
+    end
+
+    def flagged?(pos)
+        board[pos] == :F
+    end
+
     def chain(pos)
         # debugger
         @checked_neighbors << pos

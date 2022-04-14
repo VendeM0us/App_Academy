@@ -47,6 +47,8 @@ class InteractiveBoard
         fringe_count = board.count_fringes(pos)
         unless fringe_count == 0
             self[pos] = fringe_count.to_s 
+        else
+            self[pos] = " "
         end
     end
 
@@ -54,11 +56,8 @@ class InteractiveBoard
         self[pos] = :F
     end
 
-    def valid_pos?(pos)
-        # pass position validity in string state first before converting them to integers
-        idx_1, idx_2 = pos
-        valid_idx = ('0'..'8').to_a
-        valid_idx.include?(idx_1) && valid_idx.include?(idx_2)
+    def has_fringe?(pos)
+        board.count_fringes(pos) > 0
     end
 
     def get_neighbors(pos)

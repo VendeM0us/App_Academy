@@ -1,5 +1,5 @@
 require_relative "board"
-require "byebug"
+require "colorize"
 
 class InteractiveBoard
     attr_reader :board, :board_hidden
@@ -27,9 +27,11 @@ class InteractiveBoard
         board_hidden[x][y] = val
     end
 
-    def lose?(pos)
+    def lose?
         # :B means the square has bomb
-        board[pos] == :B
+        board_hidden.any? do |rows|
+            rows.any? { |square| square == "B".colorize(:red) }
+        end
     end
 
     def win?
@@ -37,23 +39,31 @@ class InteractiveBoard
         hidden = 0
 
         board_hidden.each do |rows|
-            rows.each { |square| hidden += 1 if square == "*" }
+            rows.each { |square| hidden += 1 if square == "*" || square == "F".colorize(:light_blue)}
         end
 
         hidden == 10
     end
 
-    def fringe(pos)
+    def reveal(pos)
         fringe_count = board.count_fringes(pos)
         unless fringe_count == 0
-            self[pos] = fringe_count.to_s 
+            self[pos] = fringe_count.to_s.colorize(:yellow) 
         else
             self[pos] = " "
         end
     end
 
     def flag(pos)
-        self[pos] = :F
+        if self[pos] == "F".colorize(:light_blue)
+            self[pos] = "*"
+        else
+            self[pos] = "F".colorize(:light_blue) if self[pos] == "*"
+        end
+    end
+
+    def flagged?(pos)
+        self[pos] == "F".colorize(:light_blue)
     end
 
     def has_fringe?(pos)
@@ -62,5 +72,21 @@ class InteractiveBoard
 
     def get_neighbors(pos)
         board.get_neighbors(pos)
+    end
+
+    def show_bombed
+        board.grid.each.with_index do |rows, idx_1|
+            rows.each.with_index do |square, idx_2|
+                pos = [idx_1, idx_2]
+                self[pos] = "B".colorize(:red) if square == :B
+            end
+        end
+
+        system("clear")
+        self.render
+    end
+
+    def bombed?(pos)
+        board[pos] == :B
     end
 end

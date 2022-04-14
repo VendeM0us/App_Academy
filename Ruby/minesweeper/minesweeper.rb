@@ -9,10 +9,6 @@ class MineSweeper
         @checked_neighbors = Array.new
     end
 
-    def flagged?(pos)
-        board[pos] == :F
-    end
-
     def chain(pos)
         @checked_neighbors << pos
         return [pos] if board.has_fringe?(pos)
@@ -64,16 +60,22 @@ class MineSweeper
     end
 
     def reveal(pos)
-        chains = self.chain(pos)
+        unless board.flagged?(pos)
+            if board.bombed?(pos)
+                board.show_bombed
+                return
+            end
 
-        chains.each do |square|
-            board.fringe(square) unless self.flagged?(square)
+            chains = self.chain(pos)
+
+            chains.each do |square|
+                board.reveal(square) unless board.flagged?(square)
+            end
         end
     end
 
     def take_turn
         system("clear")
-        @checked_neighbors = []
         board.render
         self.prompt
 
@@ -86,13 +88,9 @@ class MineSweeper
                 command, pos = input
                 if self.valid_pos?(pos) && self.valid_command?(command)
                     valid_input = true
-                    case input
 
-                    when "r"
-                        self.reveal(pos)
-                    when "f"
-                        board.flag(pos)
-                    end
+                    pos = self.parse_pos(pos)
+                    command == "r" ? self.reveal(pos) : board.flag(pos)
                 else
                     self.show_error
                 end
@@ -101,4 +99,20 @@ class MineSweeper
             end
         end
     end
+
+    def play
+        puts "WELCOME TO MINESWEEPER TERMINAL EDITION!!"
+        sleep(2)
+
+        self.take_turn until board.win? || board.lose?
+
+        if board.win?
+            puts "YOU WIN!! CONGRATULATIONS!"
+        else
+            puts "YOU LOSE"
+        end
+    end
 end
+
+game = MineSweeper.new
+game.play

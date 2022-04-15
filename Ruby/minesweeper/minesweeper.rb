@@ -112,6 +112,10 @@ class MineSweeper
             puts "YOU LOSE"
         end
     end
+
+    def save_game(save)
+        File.open("saves/#{save}.yaml", "w") { |file| file.write(board.to_yaml) }
+    end
 end
 
 game = MineSweeper.new

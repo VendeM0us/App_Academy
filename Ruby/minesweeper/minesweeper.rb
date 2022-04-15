@@ -1,10 +1,16 @@
 require_relative "interactive_board"
+require "yaml"
+require "byebug"
 
 class MineSweeper
     attr_reader :board
 
-    def initialize
-        @board = InteractiveBoard.new
+    def initialize(save_file)
+        if save_file.nil?
+            @board = InteractiveBoard.new
+        else
+            self.load_game(save_file)
+        end
     end
 
     def chain(pos)
@@ -36,7 +42,7 @@ class MineSweeper
     end
 
     def valid_command?(ch)
-        commands = ['r', 'f']
+        commands = ['r', 'f', 's']
         commands.include?(ch)
     end
 
@@ -46,7 +52,7 @@ class MineSweeper
 
     def prompt
         puts "Enter a command and a pos (r for reveal and f for flag)."
-        puts "Example: r 3,4"
+        puts "Example: r 3,4 (Use s <file name> to save a game)"
         print "> "
     end
 
@@ -84,7 +90,11 @@ class MineSweeper
 
             if valid_input?(input)
                 command, pos = input
-                if self.valid_pos?(pos) && self.valid_command?(command)
+                if command == "s"
+                    valid_input = true
+                    save_file = input[1]
+                    self.save_game(save_file)
+                elsif self.valid_pos?(pos) && self.valid_command?(command)
                     valid_input = true
 
                     pos = self.parse_pos(pos)
@@ -116,7 +126,11 @@ class MineSweeper
     def save_game(save)
         File.open("saves/#{save}.yaml", "w") { |file| file.write(board.to_yaml) }
     end
+
+    def load_game(save)
+        @board = YAML::load(File.read("saves/#{save}.yaml"))
+    end
 end
 
-game = MineSweeper.new
+game = MineSweeper.new(ARGV.shift)
 game.play

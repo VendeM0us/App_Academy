@@ -5,17 +5,16 @@ class MineSweeper
 
     def initialize
         @board = InteractiveBoard.new
-        @checked_neighbors = Array.new
     end
 
     def chain(pos)
-        @checked_neighbors << pos
+        board.checked_neighbors << pos
         return [pos] if board.has_fringe?(pos)
 
         chains = [pos]
 
         board.get_neighbors(pos).each do |neighbor|
-            unless @checked_neighbors.include?(neighbor)
+            unless board.checked_neighbors.include?(neighbor)
                 chains.concat(chain(neighbor))
             end
         end

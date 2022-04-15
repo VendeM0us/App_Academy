@@ -2,12 +2,13 @@ require_relative "board"
 require "colorize"
 
 class InteractiveBoard
-    attr_reader :board, :board_hidden
+    attr_reader :board, :board_hidden, :checked_neighbors
 
     def initialize
         @board = Board.new
         @board.seed_bombs
         @board_hidden = Array.new(9) { Array.new(9, "*") }
+        @checked_neighbors = Array.new
     end
 
     def render

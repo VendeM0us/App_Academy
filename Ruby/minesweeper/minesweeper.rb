@@ -1,6 +1,5 @@
 require_relative "interactive_board"
 require "yaml"
-require "byebug"
 
 class MineSweeper
     attr_reader :board

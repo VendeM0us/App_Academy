@@ -14,6 +14,6 @@ class Stack
   end
 
   def peek
-    stack.first
+    stack.last
   end
 end
